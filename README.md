@@ -1,98 +1,143 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🎴 Figuratti API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Backend da aplicação **Figuratti** — plataforma para colecionadores gerenciarem seu álbum de figurinhas da **FIFA World Cup 2026**.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 💡 Sobre o projeto
 
-## Description
+O Figuratti permite que cada usuário crie sua conta e gerencie sua coleção de figurinhas Panini da Copa do Mundo 2026 — marcando quais tem, quais faltam e quais estão repetidas, com estatísticas completas da coleção.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🚀 Tecnologias
 
-## Project setup
+- [NestJS](https://nestjs.com/)
+- [TypeORM](https://typeorm.io/)
+- [MySQL](https://www.mysql.com/)
+- [JWT](https://jwt.io/) — autenticação
+- [bcrypt](https://www.npmjs.com/package/bcrypt) — criptografia de senhas
+- [class-validator](https://github.com/typestack/class-validator) — validação de DTOs
+
+## 📦 Módulos
+
+- [ ] **AuthModule** — cadastro e login com JWT
+- [ ] **UsuarioModule** — gerenciamento de conta
+- [ ] **SelecaoModule** — catálogo de seleções (seed fixo)
+- [ ] **FigurinhaModule** — catálogo de figurinhas (seed fixo)
+- [ ] **ColecaoModule** — marcação de status e estatísticas da coleção
+
+## 🗃️ Entidades
+
+### Usuario
+| Atributo | Tipo | Detalhe |
+|---|---|---|
+| id | uuid | PK, gerado automaticamente |
+| nome | varchar | nome completo do usuário |
+| email | varchar | único, usado no login |
+| senha_hash | varchar | senha criptografada com bcrypt |
+| created_at | timestamp | gerado automaticamente na criação |
+| updated_at | timestamp | atualizado automaticamente |
+
+### Selecao
+| Atributo | Tipo | Detalhe |
+|---|---|---|
+| id | int | PK, auto increment |
+| nome | varchar | ex: "Brasil", "Argentina" |
+| codigo_fifa | varchar | ex: "BRA", "ARG", "FRA" |
+| bandeira_url | varchar | URL da imagem da bandeira |
+
+### Figurinha
+| Atributo | Tipo | Detalhe |
+|---|---|---|
+| id | int | PK, auto increment |
+| selecao_id | int | FK → selecoes.id, nullable |
+| numero | int | número oficial do álbum Panini |
+| nome_jogador | varchar | nome completo do jogador |
+| posicao | varchar | Goalkeeper, Defender, Midfielder, Forward |
+| especial | boolean | true para FF e IC |
+| categoria | varchar | nullable — Golden Baller, Goal Machine, etc |
+
+### ColecaoFigurinha
+| Atributo | Tipo | Detalhe |
+|---|---|---|
+| id | uuid | PK, gerado automaticamente |
+| usuario_id | uuid | FK → usuarios.id |
+| figurinha_id | int | FK → figurinhas.id |
+| status | enum | tenho / falta / repetida |
+| quantidade | int | padrão 1, aumenta se repetida |
+
+## 🔗 Relacionamentos
+
+- Selecao **1:N** Figurinha
+- Usuario **1:N** ColecaoFigurinha
+- Figurinha **1:N** ColecaoFigurinha
+
+## ⚙️ Rodando o projeto
 
 ```bash
-$ npm install
+# Instalar dependências
+npm install
+
+# Configurar variáveis de ambiente
+cp .env.example .env
+
+# Rodar em desenvolvimento
+npm run start:dev
+
+# Rodar o seed (popula seleções e figurinhas)
+npx ts-node src/seed.ts
 ```
 
-## Compile and run the project
+## 🌱 Variáveis de ambiente
 
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+```env
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASS=sua_senha
+DB_NAME=db_figuratti
+JWT_SECRET=seu_secret_aqui
 ```
 
-## Run tests
+## 📡 Endpoints
 
-```bash
-# unit tests
-$ npm run test
+### Auth
+| Método | Rota | Descrição | Auth |
+|---|---|---|---|
+| POST | /auth/register | Cadastrar usuário | ❌ |
+| POST | /auth/login | Fazer login | ❌ |
 
-# e2e tests
-$ npm run test:e2e
+### Seleções
+| Método | Rota | Descrição | Auth |
+|---|---|---|---|
+| GET | /selecoes | Listar todas | ❌ |
+| GET | /selecoes/:id | Buscar uma | ❌ |
+| GET | /selecoes/:id/figurinhas | Figurinhas da seleção | ❌ |
 
-# test coverage
-$ npm run test:cov
-```
+### Figurinhas
+| Método | Rota | Descrição | Auth |
+|---|---|---|---|
+| GET | /figurinhas | Listar todas | ❌ |
+| GET | /figurinhas/:id | Buscar uma | ❌ |
 
-## Deployment
+### Coleção
+| Método | Rota | Descrição | Auth |
+|---|---|---|---|
+| GET | /colecao | Álbum completo do usuário | ✅ |
+| PATCH | /colecao/:figurinhaId | Marcar status | ✅ |
+| GET | /colecao/repetidas | Listar repetidas | ✅ |
+| GET | /colecao/stats | Estatísticas da coleção | ✅ |
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## 📋 Progresso
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+- [x] Setup do projeto
+- [x] Configuração do TypeORM + MySQL
+- [x] Variáveis de ambiente
+- [ ] Entidade Usuario
+- [ ] AuthModule
+- [ ] SelecaoModule
+- [ ] FigurinhaModule
+- [ ] ColecaoModule
+- [ ] Seed das figurinhas
+- [ ] Deploy
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+## 📄 Licença
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+MIT
