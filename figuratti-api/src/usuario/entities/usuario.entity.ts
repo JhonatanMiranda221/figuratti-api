@@ -7,6 +7,7 @@ export class UsuarioEntity {
 
     @Column({length: 255})
     nome!: string;
+    
     @Column({unique: true, length: 150})
     email!: string;
 
