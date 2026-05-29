@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { UsuarioModule } from './usuario/usuario.module';
 
 //AppModule
 // inicia a aplicação
@@ -36,6 +37,7 @@ import { AppService } from './app.service';
       }),
       inject: [ConfigService],
     }),
+    UsuarioModule,
   ],
 
   controllers: [AppController],
