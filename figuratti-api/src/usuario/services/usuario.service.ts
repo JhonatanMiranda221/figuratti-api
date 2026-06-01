@@ -3,6 +3,8 @@ import {CreateUsuarioDto} from "../dto/create-usuario.dto";
 import {UsuarioEntity} from "../entities/usuario.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ILike, Repository } from "typeorm";
+import { UpdateUsuarioDto } from "../dto/update-usuario.dto";
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsuarioService {
@@ -11,10 +13,11 @@ export class UsuarioService {
         private usuarioRepository: Repository<UsuarioEntity>,
     ) {}
         async create(dto: CreateUsuarioDto): Promise<UsuarioEntity> {
+            const hashedPassword = await bcrypt.hash(dto.senha, 10);
             const usuario = this.usuarioRepository.create({
                 nome: dto.nome,
                 email: dto.email,
-                senha_Hash: dto.senha
+                senha_Hash: hashedPassword
             });
             return this.usuarioRepository.save(usuario);
         }
@@ -72,16 +75,23 @@ export class UsuarioService {
         await this.usuarioRepository.delete(id);
     }
 
-    async update(id: string, dto: CreateUsuarioDto): Promise<UsuarioEntity> {
+    async update(id: string, dto: UpdateUsuarioDto): Promise<UsuarioEntity> {
         const usuario = await this.usuarioRepository.findOneBy({ id });
 
         if (!usuario) {
             throw new HttpException('Usuário não encontrado', 404);
         }
 
-        usuario.nome = dto.nome;
-        usuario.email = dto.email;
-        usuario.senha_Hash = dto.senha;
+        if (dto.nome !== undefined) {
+            usuario.nome = dto.nome;
+        }
+        if (dto.email !== undefined) {
+            usuario.email = dto.email;
+        }
+        if (dto.senha !== undefined) {
+            const hashedPassword = await bcrypt.hash(dto.senha, 10);
+            usuario.senha_Hash = hashedPassword;
+        }
 
         return this.usuarioRepository.save(usuario);
     }
