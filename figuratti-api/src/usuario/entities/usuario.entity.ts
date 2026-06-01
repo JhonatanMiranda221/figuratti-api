@@ -5,6 +5,9 @@ export class UsuarioEntity {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
+    @Column({ type: 'enum', enum: ['user', 'admin'], default: 'user' })
+    role!: 'user' | 'admin';
+
     @Column({length: 255})
     nome!: string;
     
