@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/
 import { UsuarioService } from '../services/usuario.service';
 import { CreateUsuarioDto } from '../dto/create-usuario.dto';
 import { UsuarioEntity } from '../entities/usuario.entity';
+import { UpdateUsuarioDto } from '../dto/update-usuario.dto';
 
 @Controller('/usuarios')
 export class UsuarioController {
@@ -41,7 +42,7 @@ export class UsuarioController {
   @Put(':id')
   async update(
     @Param('id') id: string,
-    @Body() dto: CreateUsuarioDto,
+    @Body() dto: UpdateUsuarioDto,
   ): Promise<UsuarioEntity> {
     return this.usuarioService.update(id, dto);
   }
