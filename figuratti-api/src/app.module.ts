@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { UsuarioModule } from './usuario/usuario.module';
 import { AuthModule } from './auth/auth.module';
 import { SelecaoModule } from './selecao/selecao.module';
+import { FigurinhaModule } from './figurinha/figurinha.module';
 
 //AppModule
 // inicia a aplicação
@@ -42,6 +43,7 @@ import { SelecaoModule } from './selecao/selecao.module';
     UsuarioModule,
     AuthModule,
     SelecaoModule,
+    FigurinhaModule,
   ],
 
   controllers: [AppController],
