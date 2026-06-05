@@ -17,7 +17,7 @@ export class UsuarioService {
             const usuario = this.usuarioRepository.create({
                 nome: dto.nome,
                 email: dto.email,
-                senha_Hash: hashedPassword
+                senha_hash: hashedPassword
             });
             return this.usuarioRepository.save(usuario);
         }
@@ -90,7 +90,7 @@ export class UsuarioService {
         }
         if (dto.senha !== undefined) {
             const hashedPassword = await bcrypt.hash(dto.senha, 10);
-            usuario.senha_Hash = hashedPassword;
+            usuario.senha_hash = hashedPassword;
         }
 
         return this.usuarioRepository.save(usuario);
