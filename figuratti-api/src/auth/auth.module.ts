@@ -16,7 +16,7 @@ import { ConfigModule } from '@nestjs/config';
     TypeOrmModule.forFeature([UsuarioEntity]),
     JwtModule.register({
       secret: process.env.JWT_SECRET || 'segredo-dev',
-      signOptions: { expiresIn: '1d' },
+      signOptions: { expiresIn: '7d' },
     }),
   ],
   controllers: [AuthController],

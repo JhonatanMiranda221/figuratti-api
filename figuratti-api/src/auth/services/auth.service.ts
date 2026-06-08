@@ -32,7 +32,7 @@ export class AuthService {
   // 3. comparar senha (AGORA sim existe senhaValida)
   const senhaValida = await bcrypt.compare(
     senha,
-    usuario.senha_Hash,
+    usuario.senha_hash,
   );
 
   // 4. validar senha

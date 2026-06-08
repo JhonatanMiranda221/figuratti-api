@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { SelecaoEntity } from "../../selecao/entities/selecao.entity";
 
 @Entity({ name: 'tb_figurinhas' })
 export class FigurinhaEntity {
@@ -9,10 +10,14 @@ export class FigurinhaEntity {
     @Column()
     numero!: number;
 
-    @Column()
+    @Column({
+    type: 'varchar'
+    })
     nomeJogador!: string;
 
-    @Column()
+    @Column({
+        type: 'varchar'
+    })
     posicao!: string;
 
     @Column({
@@ -21,14 +26,24 @@ export class FigurinhaEntity {
     especial!: boolean;
 
     @Column({
-        nullable: true,
+    type: 'varchar',
+    nullable: true,
     })
-    categoria!: string;
-
+    categoria!: string | null;
     @CreateDateColumn()
         createdAt!: Date;
     
     @UpdateDateColumn()
         updatedAt!: Date;
+        
+        @ManyToOne(
+            () => SelecaoEntity,
+            (selecao) => selecao.figurinhas,
+            { nullable: true }
+            )
+            @JoinColumn({
+            name: 'selecao_id',
+            })
+            selecao!: SelecaoEntity;
     
 }

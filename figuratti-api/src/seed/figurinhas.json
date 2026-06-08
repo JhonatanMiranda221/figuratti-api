@@ -1,0 +1,18 @@
+[
+  {
+    "numero": 1,
+    "nomeJogador": "Alisson",
+    "posicao": "Goalkeeper",
+    "especial": false,
+    "categoria": null,
+    "selecao": "BRA"
+  },
+  {
+    "numero": 2,
+    "nomeJogador": "Marquinhos",
+    "posicao": "Defender",
+    "especial": false,
+    "categoria": null,
+    "selecao": "BRA"
+  }
+]

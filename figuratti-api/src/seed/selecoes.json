@@ -1,0 +1,12 @@
+[
+  {
+    "nome": "Brasil",
+    "codigoFifa": "BRA",
+    "bandeiraUrl": "https://example.com/bra.png"
+  },
+  {
+    "nome": "Argentina",
+    "codigoFifa": "ARG",
+    "bandeiraUrl": "https://example.com/arg.png"
+  }
+]

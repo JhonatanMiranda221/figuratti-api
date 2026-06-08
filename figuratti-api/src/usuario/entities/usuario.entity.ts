@@ -15,7 +15,7 @@ export class UsuarioEntity {
     email!: string;
 
     @Column()
-    senha_Hash!: string;
+    senha_hash!: string;
 
     @CreateDateColumn()
     createdAt!: Date;

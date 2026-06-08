@@ -1,17 +1,25 @@
-import {Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn} from 'typeorm';
+import {Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn} from 'typeorm';
+import { FigurinhaEntity } from '../../figurinha/entities/figurinha.entity';
 
 @Entity({name: 'tb_selecoes'})
 export class SelecaoEntity {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column ()
+    @Column({
+    type: 'varchar'
+    })
     nome!: string;
 
-    @Column({unique: true})
+    @Column({
+        type: 'varchar',
+        unique: true
+    })
     codigoFifa!: string;
 
-    @Column()
+    @Column({
+        type: 'varchar'
+    })
     bandeiraUrl!: string;
 
     @CreateDateColumn()
@@ -19,5 +27,11 @@ export class SelecaoEntity {
 
     @UpdateDateColumn()
     updatedAt!: Date;
+
+    @OneToMany(
+        () => FigurinhaEntity,
+        (figurinha) => figurinha.selecao
+    )
+    figurinhas!: FigurinhaEntity[];
     
 }
