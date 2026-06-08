@@ -1,216 +1,414 @@
 # 🎴 Figuratti API
 
-Backend da aplicação **Figuratti** — plataforma para colecionadores gerenciarem seu álbum de figurinhas da **FIFA World Cup 2026**.
+Backend da aplicação **Figuratti**, uma plataforma para gerenciamento de coleções de figurinhas inspirada nos álbuns da Copa do Mundo FIFA 2026.
+
+O projeto foi desenvolvido utilizando **NestJS**, **TypeORM** e **MySQL**, com foco em boas práticas de arquitetura backend, autenticação segura e modelagem relacional.
 
 ---
 
-## 💡 Sobre o projeto
+# 🚀 Tecnologias Utilizadas
 
-O Figuratti permite que cada usuário crie sua conta e gerencie sua coleção de figurinhas Panini da Copa do Mundo 2026 — marcando quais tem, quais faltam e quais estão repetidas, com estatísticas completas da coleção.
-
-O projeto está sendo desenvolvido com foco em:
-
-* estudo de arquitetura backend
-* autenticação com JWT
-* modelagem relacional
-* boas práticas com NestJS
-* organização modular
-* regras de negócio reais
+* NestJS
+* TypeORM
+* MySQL
+* JWT (JSON Web Token)
+* Passport
+* bcrypt
+* class-validator
+* @nestjs/config
 
 ---
 
-## 🚀 Tecnologias
+# 🎯 Objetivo do Projeto
 
-* [NestJS](https://nestjs.com/)
-* [TypeORM](https://typeorm.io/)
-* [MySQL](https://www.mysql.com/)
-* [JWT](https://jwt.io/) — autenticação
-* [bcrypt](https://www.npmjs.com/package/bcrypt) — criptografia de senhas
-* [class-validator](https://github.com/typestack/class-validator) — validação de DTOs
-* [@nestjs/config](https://docs.nestjs.com/techniques/configuration) — variáveis de ambiente
+O Figuratti permite que usuários:
 
----
+* Criem uma conta
+* Realizem login autenticado com JWT
+* Consultem seleções participantes
+* Consultem figurinhas do álbum
+* Gerenciem sua coleção pessoal
+* Marquem figurinhas como:
 
-## 📦 Módulos
-
-* [ ] **AuthModule** — cadastro e login com JWT
-* [ ] **UsuarioModule** — gerenciamento de conta
-* [ ] **SelecaoModule** — catálogo de seleções (seed fixo)
-* [ ] **FigurinhaModule** — catálogo de figurinhas (seed fixo)
-* [ ] **ColecaoModule** — marcação de status e estatísticas da coleção
+  * Tenho
+  * Falta
+  * Repetida
+* Visualizem estatísticas da coleção
 
 ---
 
-## 🗃️ Entidades
+# 🏗️ Arquitetura
 
-### Usuario
+O projeto segue a arquitetura modular recomendada pelo NestJS.
 
-| Atributo   | Tipo      | Detalhe                           |
-| ---------- | --------- | --------------------------------- |
-| id         | uuid      | PK, gerado automaticamente        |
-| nome       | varchar   | nome completo do usuário          |
-| email      | varchar   | único, usado no login             |
-| senha_hash | varchar   | senha criptografada com bcrypt    |
-| created_at | timestamp | gerado automaticamente na criação |
-| updated_at | timestamp | atualizado automaticamente        |
-
----
-
-### Selecao
-
-| Atributo     | Tipo    | Detalhe                   |
-| ------------ | ------- | ------------------------- |
-| id           | int     | PK, auto increment        |
-| nome         | varchar | ex: "Brasil", "Argentina" |
-| codigo_fifa  | varchar | ex: "BRA", "ARG", "FRA"   |
-| bandeira_url | varchar | URL da imagem da bandeira |
+```text
+src/
+├── auth/
+├── usuario/
+├── selecao/
+├── figurinha/
+├── colecao/
+├── seed/
+├── app.module.ts
+└── main.ts
+```
 
 ---
 
-### Figurinha
+# 📦 Módulos
 
-| Atributo     | Tipo    | Detalhe                                     |
-| ------------ | ------- | ------------------------------------------- |
-| id           | int     | PK, auto increment                          |
-| selecao_id   | int     | FK → selecoes.id, nullable                  |
-| numero       | int     | número oficial do álbum Panini              |
-| nome_jogador | varchar | nome completo do jogador                    |
-| posicao      | varchar | Goalkeeper, Defender, Midfielder, Forward   |
-| especial     | boolean | true para figurinhas especiais              |
-| categoria    | varchar | nullable — Golden Baller, Goal Machine, etc |
+## AuthModule
 
----
+Responsável por:
 
-### ColecaoFigurinha
-
-| Atributo     | Tipo | Detalhe                    |
-| ------------ | ---- | -------------------------- |
-| id           | uuid | PK, gerado automaticamente |
-| usuario_id   | uuid | FK → usuarios.id           |
-| figurinha_id | int  | FK → figurinhas.id         |
-| status       | enum | tenho / falta / repetida   |
-| quantidade   | int  | padrão 1                   |
+* Login
+* Geração de JWT
+* Validação de credenciais
+* Proteção de rotas
 
 ---
 
-## 🔗 Relacionamentos
+## UsuarioModule
 
-* Selecao **1:N** Figurinha
-* Usuario **1:N** ColecaoFigurinha
-* Figurinha **1:N** ColecaoFigurinha
+Responsável por:
+
+* Cadastro de usuários
+* Busca de usuários
+* Atualização de dados
+* Remoção de usuários
 
 ---
 
-## ⚙️ Rodando o projeto
+## SelecaoModule
+
+Responsável por:
+
+* Cadastro de seleções
+* Consulta de seleções
+* Atualização de seleções
+* Remoção de seleções
+
+---
+
+## FigurinhaModule
+
+Responsável por:
+
+* Cadastro de figurinhas
+* Consulta de figurinhas
+* Atualização de figurinhas
+* Remoção de figurinhas
+
+---
+
+## ColecaoModule
+
+Responsável por:
+
+* Gerenciamento da coleção do usuário
+* Controle de status das figurinhas
+* Consulta de repetidas
+* Estatísticas da coleção
+
+---
+
+# 🗄️ Banco de Dados
+
+## Usuario
+
+| Campo      | Tipo      |
+| ---------- | --------- |
+| id         | uuid      |
+| nome       | varchar   |
+| email      | varchar   |
+| senha_hash | varchar   |
+| role       | enum      |
+| createdAt  | timestamp |
+| updatedAt  | timestamp |
+
+---
+
+## Selecao
+
+| Campo       | Tipo      |
+| ----------- | --------- |
+| id          | int       |
+| nome        | varchar   |
+| codigoFifa  | varchar   |
+| bandeiraUrl | varchar   |
+| createdAt   | timestamp |
+| updatedAt   | timestamp |
+
+---
+
+## Figurinha
+
+| Campo       | Tipo      |
+| ----------- | --------- |
+| id          | int       |
+| numero      | int       |
+| nomeJogador | varchar   |
+| posicao     | varchar   |
+| especial    | boolean   |
+| categoria   | varchar   |
+| selecao_id  | int       |
+| createdAt   | timestamp |
+| updatedAt   | timestamp |
+
+---
+
+## ColecaoFigurinha
+
+| Campo        | Tipo      |
+| ------------ | --------- |
+| id           | uuid      |
+| usuario_id   | uuid      |
+| figurinha_id | int       |
+| status       | enum      |
+| quantidade   | int       |
+| createdAt    | timestamp |
+| updatedAt    | timestamp |
+
+---
+
+# 🔗 Relacionamentos
+
+## Seleção → Figurinhas
+
+```text
+Selecao 1:N Figurinha
+```
+
+Uma seleção possui várias figurinhas.
+
+---
+
+## Usuário → Coleção
+
+```text
+Usuario 1:N ColecaoFigurinha
+```
+
+Um usuário possui vários registros de coleção.
+
+---
+
+## Figurinha → Coleção
+
+```text
+Figurinha 1:N ColecaoFigurinha
+```
+
+Uma figurinha pode estar presente na coleção de vários usuários.
+
+---
+
+# 🔐 Autenticação
+
+A autenticação é realizada utilizando JWT.
+
+Após o login, o usuário recebe um token:
+
+```json
+{
+  "token": "jwt-token"
+}
+```
+
+As rotas protegidas exigem:
+
+```http
+Authorization: Bearer SEU_TOKEN
+```
+
+---
+
+# 📡 Endpoints
+
+## Autenticação
+
+| Método | Endpoint    |
+| ------ | ----------- |
+| POST   | /auth/login |
+
+---
+
+## Usuários
+
+| Método | Endpoint      |
+| ------ | ------------- |
+| POST   | /usuarios     |
+| GET    | /usuarios     |
+| GET    | /usuarios/:id |
+| PUT    | /usuarios/:id |
+| DELETE | /usuarios/:id |
+
+---
+
+## Seleções
+
+| Método | Endpoint      |
+| ------ | ------------- |
+| POST   | /selecoes     |
+| GET    | /selecoes     |
+| GET    | /selecoes/:id |
+| PATCH  | /selecoes/:id |
+| DELETE | /selecoes/:id |
+
+---
+
+## Figurinhas
+
+| Método | Endpoint        |
+| ------ | --------------- |
+| POST   | /figurinhas     |
+| GET    | /figurinhas     |
+| GET    | /figurinhas/:id |
+| PATCH  | /figurinhas/:id |
+| DELETE | /figurinhas/:id |
+
+---
+
+## Coleção
+
+### Atualizar status da figurinha
+
+```http
+PATCH /colecao/:figurinhaId
+```
+
+Exemplo:
+
+```json
+{
+  "status": "TENHO"
+}
+```
+
+ou
+
+```json
+{
+  "status": "REPETIDA"
+}
+```
+
+---
+
+### Listar coleção
+
+```http
+GET /colecao
+```
+
+---
+
+### Listar repetidas
+
+```http
+GET /colecao/repetidas
+```
+
+---
+
+### Estatísticas da coleção
+
+```http
+GET /colecao/stats
+```
+
+Exemplo de resposta:
+
+```json
+{
+  "total": 640,
+  "tenho": 320,
+  "faltam": 320,
+  "repetidas": 25,
+  "percentual": 50
+}
+```
+
+---
+
+# 🌱 Seed
+
+O projeto possui seed para popular:
+
+* Seleções
+* Figurinhas
+
+Executar:
 
 ```bash
-# Instalar dependências
-npm install
-
-# Copiar variáveis de ambiente
-cp .env.example .env
-
-# Rodar em desenvolvimento
-npm run start:dev
-
-# Rodar o seed (popula seleções e figurinhas)
-npx ts-node src/seed.ts
+npx ts-node src/seed/seed.ts
 ```
 
 ---
 
-## 🌱 Variáveis de ambiente
+# ⚙️ Executando o Projeto
 
-O projeto utiliza variáveis de ambiente com `@nestjs/config`.
+## Instalar dependências
 
-1. Copie o arquivo `.env.example`
-2. Renomeie para `.env`
-3. Preencha os valores corretamente
+```bash
+npm install
+```
 
-### Exemplo do `.env.example`
+## Configurar variáveis de ambiente
+
+Crie um arquivo:
 
 ```env
-DB_HOST=
-DB_PORT=
-DB_USER=
-DB_PASS=
-DB_NAME=
-JWT_SECRET=
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASS=root
+DB_NAME=db_figuratti
+
+JWT_SECRET=figuratti_secret
+```
+
+## Executar em desenvolvimento
+
+```bash
+npm run start:dev
 ```
 
 ---
 
-## 📡 Endpoints
+# 📋 Regras de Negócio
 
-### Auth
+* O email deve ser único
+* Senhas são criptografadas com bcrypt
+* JWT possui expiração de 7 dias
+* Usuários só acessam sua própria coleção
+* Cada usuário pode possuir apenas um registro por figurinha
+* O status da figurinha pode ser:
 
-| Método | Rota           | Descrição         | Auth |
-| ------ | -------------- | ----------------- | ---- |
-| POST   | /auth/register | Cadastrar usuário | ❌    |
-| POST   | /auth/login    | Fazer login       | ❌    |
-
----
-
-### Seleções
-
-| Método | Rota                     | Descrição             | Auth |
-| ------ | ------------------------ | --------------------- | ---- |
-| GET    | /selecoes                | Listar todas          | ❌    |
-| GET    | /selecoes/:id            | Buscar uma            | ❌    |
-| GET    | /selecoes/:id/figurinhas | Figurinhas da seleção | ❌    |
+  * TENHO
+  * FALTA
+  * REPETIDA
+* Estatísticas são calculadas automaticamente
 
 ---
 
-### Figurinhas
+# 📈 Status do Projeto
 
-| Método | Rota            | Descrição    | Auth |
-| ------ | --------------- | ------------ | ---- |
-| GET    | /figurinhas     | Listar todas | ❌    |
-| GET    | /figurinhas/:id | Buscar uma   | ❌    |
-
----
-
-### Coleção
-
-| Método | Rota                  | Descrição                 | Auth |
-| ------ | --------------------- | ------------------------- | ---- |
-| GET    | /colecao              | Álbum completo do usuário | ✅    |
-| PATCH  | /colecao/:figurinhaId | Marcar status             | ✅    |
-| GET    | /colecao/repetidas    | Listar repetidas          | ✅    |
-| GET    | /colecao/stats        | Estatísticas da coleção   | ✅    |
+* ✅ Autenticação JWT
+* ✅ Cadastro de usuários
+* ✅ CRUD de seleções
+* ✅ CRUD de figurinhas
+* ✅ Seed de dados
+* ✅ Coleção de figurinhas
+* ✅ Estatísticas da coleção
+* 🚧 Swagger
+* 🚧 Deploy
+* 🚧 Frontend React
 
 ---
 
-## 📋 Regras de negócio
+# 📄 Licença
 
-* Status padrão: **falta**
-* Quantidade mínima: **1**
-* Quando status muda para **tenho** ou **falta**, quantidade volta para **1**
-* Se já existe registro de coleção para o usuário + figurinha, atualiza
-* Usuário só acessa sua própria coleção
-* Email deve ser único
-* Senha mínima de 6 caracteres
-* JWT expira em 7 dias
-* Senha nunca é retornada nos endpoints
+Este projeto está sob a licença MIT.
 
----
-
-## 📋 Progresso
-
-* [x] Setup do projeto
-* [x] Configuração do TypeORM + MySQL
-* [x] Variáveis de ambiente
-* [ ] Entidade Usuario
-* [ ] AuthModule
-* [ ] SelecaoModule
-* [ ] FigurinhaModule
-* [ ] ColecaoModule
-* [ ] Seed das figurinhas
-* [ ] Deploy
-
----
-
-## 📄 Licença
-
-MIT
 
