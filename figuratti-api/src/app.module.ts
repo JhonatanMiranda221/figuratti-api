@@ -7,6 +7,7 @@ import { UsuarioModule } from './usuario/usuario.module';
 import { AuthModule } from './auth/auth.module';
 import { SelecaoModule } from './selecao/selecao.module';
 import { FigurinhaModule } from './figurinha/figurinha.module';
+import { ColecaoModule } from './colecao/colecao.module';
 
 //AppModule
 // inicia a aplicação
@@ -44,6 +45,7 @@ import { FigurinhaModule } from './figurinha/figurinha.module';
     AuthModule,
     SelecaoModule,
     FigurinhaModule,
+    ColecaoModule,
   ],
 
   controllers: [AppController],
